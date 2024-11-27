@@ -7,17 +7,18 @@
  * Author URI: https://ideasilo.wordpress.com/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Version: 1.8
- * Requires at least: 6.4
+ * Version: 1.9
+ * Requires at least: 6.6
  * Requires PHP: 7.4
  */
 
-define( 'LISTO_VERSION', '1.8' );
+define( 'LISTO_VERSION', '1.9' );
 define( 'LISTO_PLUGIN_DIR', __DIR__ );
 define( 'LISTO_MODULES_DIR', path_join( LISTO_PLUGIN_DIR, 'modules' ) );
 define( 'LISTO_LANGUAGES_DIR', path_join( LISTO_PLUGIN_DIR, 'languages' ) );
 
 require_once LISTO_PLUGIN_DIR . '/rest-api.php';
+require_once LISTO_PLUGIN_DIR . '/datalist.php';
 
 interface Listo {
 	public static function items();
@@ -32,6 +33,7 @@ class Listo_Manager {
 		$list_types = array(
 			'countries' => 'Listo_Countries',
 			'countries_a2a3' => 'Listo_Countries_A2A3',
+			'emoji_flags' => 'Listo_EmojiFlags',
 			'telephone_country_codes' => 'Listo_TelephoneCountryCodes',
 			'ar_subdivisions' => 'Listo_AR_Subdivisions',
 			'bo_subdivisions' => 'Listo_BO_Subdivisions',
@@ -64,6 +66,15 @@ class Listo_Manager {
 		return apply_filters( 'listo_list_types', $list_types );
 	}
 
+	public static function load_module( $type ) {
+		$mod = sanitize_file_name( str_replace( '_', '-', $type ) . '.php' );
+		$mod = path_join( LISTO_MODULES_DIR, $mod );
+
+		if ( file_exists( $mod ) ) {
+			require_once $mod;
+		}
+	}
+
 	public static function get_list_items( $type, $options = '' ) {
 		$options = wp_parse_args( $options, array(
 			'group' => '',
@@ -81,12 +92,7 @@ class Listo_Manager {
 		$class = $list_types[$type];
 
 		if ( ! class_exists( $class ) ) {
-			$mod = sanitize_file_name( str_replace( '_', '-', $type ) . '.php' );
-			$mod = path_join( LISTO_MODULES_DIR, $mod );
-
-			if ( file_exists( $mod ) ) {
-				require_once $mod;
-			}
+			self::load_module( $type );
 		}
 
 		if ( ! is_callable( array( $class, 'items' ) ) ) {
