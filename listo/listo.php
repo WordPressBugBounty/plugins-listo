@@ -3,16 +3,16 @@
  * Plugin Name: Listo
  * Plugin URI: https://contactform7.com/listo/
  * Description: Listo is a simple plugin that supplies commonly used lists to other plugins and themes.
- * Author: Takayuki Miyoshi
- * Author URI: https://ideasilo.wordpress.com/
+ * Author: Rock Lobster Inc.
+ * Author URI: https://github.com/rocklobster-in/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Version: 1.9
+ * Version: 1.9.1
  * Requires at least: 6.6
  * Requires PHP: 7.4
  */
 
-define( 'LISTO_VERSION', '1.9' );
+define( 'LISTO_VERSION', '1.9.1' );
 define( 'LISTO_PLUGIN_DIR', __DIR__ );
 define( 'LISTO_MODULES_DIR', path_join( LISTO_PLUGIN_DIR, 'modules' ) );
 define( 'LISTO_LANGUAGES_DIR', path_join( LISTO_PLUGIN_DIR, 'languages' ) );
